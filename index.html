@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Personal Milk Expense Tracker</title>
 
-<!-- Chart.js, jsPDF, jsPDF-AutoTable, PapaParse (CDN) -->
+<!-- CDN libs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
@@ -18,82 +18,151 @@
     --muted:#475569; --accent:#8b5cf6;
   }
   html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#07203a}
-  /* layout */
-  .container { max-width:1200px; margin:20px auto; padding:12px; }
-  .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
-  .title { color:white; font-weight:800; font-size:20px; display:flex; align-items:center; gap:10px; }
-  .subtitle { color: rgba(255,255,255,0.9); font-size:13px; margin-top:4px; }
-  .nav { display:flex; gap:8px; }
-  .nav button { background: rgba(255,255,255,0.14); border:0; color:white; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:700; }
-  .nav button.active { background: white; color:var(--bg1); box-shadow:0 6px 18px rgba(2,6,23,0.12); }
-  .layout { display:grid; grid-template-columns: 1fr 360px; gap:12px; align-items:start; }
-  .card { background:var(--card); border-radius:12px; padding:12px; box-shadow:0 8px 24px rgba(2,6,23,0.14); }
-  .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:8px; }
-  .search { padding:8px 10px; border-radius:8px; border:1px solid #e6e9ee; min-width:160px; }
-  .btn { padding:8px 12px; border-radius:10px; border:0; cursor:pointer; font-weight:700; background:white; box-shadow:0 6px 16px rgba(15,23,42,0.06); }
-  .btn-primary { background:linear-gradient(90deg,var(--accent),#60a5fa); color:white; }
-  .filter-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:8px; }
-  .small { font-size:13px; color:var(--muted); }
 
-  /* calendar */
-  .month-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-  .month-controls { display:flex; gap:8px; align-items:center; }
-  .month-title { font-size:18px; font-weight:800; margin:0; }
-  .calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; }
-  .weekday { font-size:13px; color:var(--muted); text-align:center; padding:6px 4px; }
-  .day { min-height:100px; background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.86)); border-radius:12px; padding:8px; display:flex; flex-direction:column; gap:6px; transition: transform .16s, box-shadow .16s, opacity .2s; cursor:pointer; opacity:0; transform:translateY(6px); animation:fadeIn 300ms ease forwards; }
-  @keyframes fadeIn { to { opacity:1; transform:none } }
-  .day:hover { transform:translateY(-6px) scale(1.01); box-shadow:0 18px 40px rgba(5,12,30,0.18); }
-  .day.outside { opacity:.45; filter:grayscale(.12) }
-  .date-num { font-weight:700; font-size:16px; display:flex; justify-content:space-between; align-items:center; }
-  .entry-line { font-size:13px; display:flex; justify-content:space-between; gap:6px; }
-  .placeholder { color:var(--muted); font-size:13px; padding-top:6px; }
-  .total-badge { margin-top:auto; background:linear-gradient(90deg,var(--accent),#60a5fa); color:white; padding:6px 8px; border-radius:10px; font-weight:700; font-size:13px; text-align:center; transform-origin:center; transition:transform .35s ease; }
-  .bloom { animation: bloom .55s cubic-bezier(.2,.9,.3,1) }
-  @keyframes bloom { 0%{transform:scale(.9);opacity:.6}40%{transform:scale(1.08);opacity:1}100%{transform:scale(1)} }
+  /* CONTAINER + CENTERING */
+  .container{
+    max-width:1100px;
+    margin:18px auto;
+    padding:12px;
+    box-sizing:border-box;
+  }
+
+  /* TOPBAR: stacked and centered on all viewports */
+  .topbar{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:12px;
+    text-align:center;
+    padding-top:6px;
+    padding-bottom:6px;
+  }
+  .topbar > div{
+    width:100%;
+    max-width:1100px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto;
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .title{color:white;font-weight:800;font-size:20px;display:flex;align-items:center;gap:10px;justify-content:center}
+  .subtitle{color:rgba(255,255,255,0.95);font-size:13px;margin-top:4px;max-width:900px}
+  .nav{display:flex;gap:8px;justify-content:center;align-items:center;margin:0}
+
+  .nav button{background:rgba(255,255,255,0.14);border:0;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700}
+  .nav button.active{background:white;color:var(--bg1);box-shadow:0 6px 18px rgba(2,6,23,0.12)}
+
+  /* LAYOUT: centered and responsive */
+  .layout{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  /* Constrain main & right widths so the layout stays centered */
+  #mainContent, .right { width:100%; max-width:760px; box-sizing:border-box; }
+
+  /* For large screens show two-column centered grid */
+  @media (min-width:1000px){
+    .layout{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:12px;
+      align-items:start;
+      justify-items:center;
+    }
+    #mainContent{max-width:760px; width:100%;}
+    .right{max-width:360px; width:100%;}
+  }
+
+  .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 8px 24px rgba(2,6,23,0.14)}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .search{padding:8px 10px;border-radius:8px;border:1px solid #e6e9ee;min-width:160px}
+  .btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700;background:white;box-shadow:0 6px 16px rgba(15,23,42,0.06)}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#60a5fa);color:white}
+  .filter-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* Calendar: compact sequential days (no leading/trailing empty cells) */
+  .month-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+  .month-controls{display:flex;gap:8px;align-items:center}
+  .month-title{font-size:18px;font-weight:800;margin:0}
+  .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+  .day{background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,255,255,0.92));border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;transition:transform .16s,box-shadow .16s;cursor:pointer;min-height:90px}
+  .day:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(5,12,30,0.12)}
+  .date-num{font-weight:800;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+  .entry-line{font-size:13px;display:flex;justify-content:space-between;gap:6px}
+  .placeholder{color:var(--muted);font-size:13px;padding-top:8px}
+  .total-badge{margin-top:auto;background:linear-gradient(90deg,var(--accent),#60a5fa);color:white;padding:6px 8px;border-radius:10px;font-weight:700;font-size:13px;text-align:center;transform-origin:center;transition:transform .35s}
+  .bloom{animation:bloom .55s cubic-bezier(.2,.9,.3,1)}
+  @keyframes bloom{0%{transform:scale(.9);opacity:.6}40%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
 
   /* right panel */
-  .right { display:flex; flex-direction:column; gap:12px; }
-  .big-total { font-size:28px; font-weight:800; margin:6px 0; }
-  .compare { font-size:14px; color:var(--muted); }
+  .right{display:flex;flex-direction:column;gap:12px}
+  .big-total{font-size:28px;font-weight:800;margin:6px 0}
+  .compare{font-size:14px;color:var(--muted)}
 
   /* modal */
-  .modal-backdrop{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:60; background:linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.45)); }
-  .modal{ width:100%; max-width:520px; background:white; border-radius:12px; padding:18px; }
-  .form-row{ display:flex; gap:10px; margin-bottom:10px; align-items:center; }
-  .form-row label{ min-width:110px; font-size:14px; color:var(--muted); }
-  input[type="number"], input[type="text"], input[type="date"]{ flex:1; padding:10px 12px; border-radius:8px; border:1px solid #e6e9ee; font-size:16px; }
+  .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;background:linear-gradient(rgba(2,6,23,0.45),rgba(2,6,23,0.45))}
+  .modal{width:100%;max-width:520px;background:white;border-radius:12px;padding:18px}
+  .form-row{display:flex;gap:10px;margin-bottom:10px;align-items:center}
+  .form-row label{min-width:110px;font-size:14px;color:var(--muted)}
+  input[type="number"],input[type="text"],input[type="date"]{flex:1;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ee;font-size:16px}
+  .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
 
-  /* confetti */
-  #confettiCanvas { position:fixed; left:0; top:0; pointer-events:none; width:100%; height:100%; z-index:80; }
+  /* confetti canvas */
+  #confettiCanvas{position:fixed;left:0;top:0;pointer-events:none;width:100%;height:100%;z-index:80}
 
-  /* analysis */
-  .analysis-card { height:320px; }
-
-  /* responsive */
+  /* responsive polish */
   @media (max-width:980px){
-    .layout { display:block; }
-    .right { order:2; }
-    .calendar { grid-template-columns: repeat(3, 1fr); gap:8px; }
-    .weekday { display:none; }
-    .day { min-height:90px; }
-    .search { min-width:120px; }
+    .layout{display:block}
+    .right{order:2}
+    .calendar{grid-template-columns:repeat(3,1fr)}
+    .title{font-size:18px}
   }
+
   @media (max-width:520px){
-    .calendar { grid-template-columns: repeat(2,1fr); }
-    .title { font-size:16px; }
-    .month-title { font-size:16px; }
+    /* calendar */
+    .calendar{grid-template-columns:repeat(2,1fr)}
+    .day{min-height:110px;padding:10px}
+    .date-num{font-size:15px}
+    .entry-line{font-size:13px}
+    .total-badge{font-size:13px;padding:6px}
+
+    /* header */
+    .topbar{flex-direction:column;align-items:center;text-align:center}
+    .nav{width:100%;justify-content:center;margin-top:6px}
+    .subtitle{font-size:13px;color:rgba(255,255,255,0.95)}
+
+    /* controls */
+    .month-bar{flex-direction:row;align-items:center;justify-content:space-between}
+    .controls .month-bar, .filter-row { flex-direction:column; gap:8px; align-items:flex-start; }
+    .search{min-width:0; width:100%}
+    .filter-row input[type="date"]{ width:100%; }
+    .btn{padding:8px 10px}
+
+    /* container spacing for small screen */
+    .container{padding-left:8px;padding-right:8px}
   }
+
+  /* small fixes */
+  .title + .subtitle,.subtitle{color:rgba(255,255,255,0.95);text-shadow:0 1px 0 rgba(0,0,0,0.12)}
 </style>
+
 </head>
 <body>
 <div class="container">
   <div class="topbar">
     <div>
-      <div class="title">
-        🥛 Personal Milk Expense Tracker
-      </div>
-      <div class="subtitle small">Quickly track morning & night milk — view charts and export reports</div>
+      <div class="title">🥛 Personal Milk Expense Tracker</div>
+      <div class="subtitle small">Track morning & night milk, export reports, and view monthly insights</div>
     </div>
 
     <div class="nav" role="tablist" aria-label="Main navigation">
@@ -103,7 +172,6 @@
   </div>
 
   <div class="layout">
-    <!-- LEFT: Calendar or Content -->
     <div id="mainContent">
       <div class="card">
         <div class="controls">
@@ -133,7 +201,6 @@
       </div>
     </div>
 
-    <!-- RIGHT: Summary / Analysis -->
     <aside class="right">
       <div id="summaryCard" class="card">
         <h3 style="margin:0 0 8px 0">Monthly Summary</h3>
@@ -156,7 +223,7 @@
           <div class="small">Least expensive day: <span id="leastExp">—</span></div>
         </div>
 
-        <div style="height:220px; margin-top:10px;">
+        <div style="height:220px;margin-top:10px;">
           <canvas id="monthChart" width="400" height="220" aria-label="Daily totals chart"></canvas>
         </div>
 
@@ -172,9 +239,7 @@
       <div id="analysisCard" class="card analysis-card" style="display:none">
         <h3 style="margin:0 0 8px 0">Analysis</h3>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <select id="yearSelect" style="padding:8px;border-radius:8px;border:1px solid #e6e9ee">
-            <!-- years filled dynamically -->
-          </select>
+          <select id="yearSelect" style="padding:8px;border-radius:8px;border:1px solid #e6e9ee"></select>
           <div class="small">Click a month bar to jump to that month</div>
         </div>
         <div style="height:240px">
@@ -185,7 +250,6 @@
   </div>
 </div>
 
-<!-- Confetti Canvas -->
 <canvas id="confettiCanvas"></canvas>
 
 <!-- Modal -->
@@ -227,8 +291,8 @@
 
 <script>
 /* ---------- CONFIG ---------- */
-const SHEETDB_API = "https://sheetdb.io/api/v1/pm3r23ogtfgrj"; // your SheetDB API
-const STORAGE_KEY = "milk_tracker_entries_v3";
+const SHEETDB_API = "https://sheetdb.io/api/v1/pm3r23ogtfgrj"; // <-- your SheetDB API (leave empty if not using)
+const STORAGE_KEY = "milk_tracker_entries_compact_v1";
 const DEFAULT_PRICE = 48;
 
 /* ---------- UTIL ---------- */
@@ -239,8 +303,8 @@ function formatCurrency(num){
 function pad(n){ return n<10? '0'+n : ''+n; }
 
 /* ---------- DATA ---------- */
-let entries = {};
-let viewDate = new Date();
+let entries = {}; // key: YYYY-MM-DD
+let viewDate = new Date(); // current month view
 let monthChart = null, yearChart = null;
 
 /* ---------- STORAGE ---------- */
@@ -253,7 +317,6 @@ async function syncToSheetUpsert(){
   const all = Object.values(entries);
   try{
     for(const e of all){
-      // try update
       const updateRes = await fetch(`${SHEETDB_API}/date/${e.date}`, {
         method: 'PUT',
         headers:{ 'Content-Type':'application/json' },
@@ -269,7 +332,6 @@ async function syncToSheetUpsert(){
         } ] })
       });
       if(updateRes.status === 404 || !updateRes.ok){
-        // fallback to POST
         await fetch(SHEETDB_API, {
           method:'POST',
           headers:{ 'Content-Type':'application/json' },
@@ -290,7 +352,7 @@ async function syncToSheetUpsert(){
   }catch(err){ console.error(err); alert("Sync error: " + err.message); }
 }
 
-/* ---------- RENDER CALENDAR ---------- */
+/* ---------- RENDER CALENDAR (compact sequential days) ---------- */
 const calendarRoot = document.getElementById('calendarRoot');
 const monthTitle = document.getElementById('monthTitle');
 const monthTotalEl = document.getElementById('monthTotal');
@@ -304,123 +366,61 @@ const todayHelperDate = document.getElementById('todayHelperDate');
 
 function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
 function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
-
 function ddmmyyyy(iso){
   const p = iso.split('-'); if(p.length!==3) return iso;
   return `${pad(Number(p[2]))}-${pad(Number(p[1]))}-${p[0]}`;
 }
-function isoFromDDMM(ddmmYYYY){
-  // accept DD-MM or DD-MM-YYYY
-  const parts = ddmmYYYY.split('-');
-  if(parts.length === 3){
-    const d = pad(Number(parts[0])); const m = pad(Number(parts[1])); const y = parts[2];
-    return `${y}-${m}-${d}`;
-  } else if(parts.length === 2){
-    const d = pad(Number(parts[0])); const m = pad(Number(parts[1]));
-    const y = viewDate.getFullYear();
-    return `${y}-${m}-${d}`;
-  }
-  return null;
-}
 
-/* ---------- RENDER CALENDAR (only current month dates shown) ---------- */
+/* Important change: we render only the days of the month in sequential order.
+   No leading/trailing placeholders. The grid simply wraps every 7 items. */
 function renderCalendar(){
   calendarRoot.innerHTML = '';
   const start = startOfMonth(viewDate), end = endOfMonth(viewDate);
-  const startWeekday = start.getDay(); // 0..6
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  days.forEach(w=> {
-    const el = document.createElement('div');
-    el.className = 'weekday';
-    el.textContent = w;
-    calendarRoot.appendChild(el);
-  });
+  const daysCount = end.getDate();
 
-  // 1) Add empty placeholders for the previous month's tail (so the first day of this month aligns correctly)
-  for(let i=0; i<startWeekday; i++){
-    calendarRoot.appendChild(dayTile(null, true, null)); // empty tile
+  // create day tiles from 1..daysCount (no blanks)
+  for(let d=1; d<=daysCount; d++){
+    const dateObj = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+    calendarRoot.appendChild(dayTile(d, dateObj));
   }
 
-  // 2) Add the actual days of THIS month only
-  for(let d=1; d<=end.getDate(); d++){
-    calendarRoot.appendChild(dayTile(d, false, new Date(viewDate.getFullYear(), viewDate.getMonth(), d)));
-  }
-
-  // 3) Fill the remaining cells of the last week with empty placeholders (so the grid stays rectangular)
-  const totalCells = 7 * Math.ceil((startWeekday + end.getDate()) / 7);
-  const after = totalCells - (startWeekday + end.getDate());
-  for(let i=0; i<after; i++){
-    calendarRoot.appendChild(dayTile(null, true, null)); // empty tile
-  }
-
-  // update UI text & chart/summary
   monthTitle.textContent = viewDate.toLocaleString('default',{month:'long', year:'numeric'});
-  // small today helper update if you have it
+  // today helper
   const t = new Date();
   todayHelperDate.textContent = `${pad(t.getDate())}-${pad(t.getMonth()+1)}-${t.getFullYear()}`;
-
   updateSummaryAndChart();
 }
 
-/* ---------- dayTile (renders empty tiles for outside days) ---------- */
-function dayTile(dayNum, outside=false, dateObj=null){
+function dayTile(dayNum, dateObj){
   const wrapper = document.createElement('div');
-  wrapper.className = 'day' + (outside ? ' outside' : '');
+  wrapper.className = 'day';
   wrapper.setAttribute('role','gridcell');
+  const y=dateObj.getFullYear(), m=pad(dateObj.getMonth()+1), d=pad(dateObj.getDate());
+  const key = `${y}-${m}-${d}`;
 
-  // If this is an "outside" tile (placeholder), render an empty/neutral cell
-  if(outside || !dateObj){
-    // keep the tile visually minimal so it doesn't look like other months' dates
-    wrapper.innerHTML = `<div style="height:100%; display:flex; align-items:center; justify-content:center; color:transparent;">&nbsp;</div>`;
-    return wrapper;
-  }
-
-  // Normal day tile for current month
-  const y = dateObj.getFullYear();
-  const m = pad(dateObj.getMonth()+1);
-  const d = pad(dateObj.getDate());
-  const dateKey = `${y}-${m}-${d}`;
-
-  const dateNum = document.createElement('div');
-  dateNum.className = 'date-num';
-  // show DD-MM for readability inside tiles
+  const dateNum = document.createElement('div'); dateNum.className='date-num';
   dateNum.innerHTML = `<span>${pad(dateObj.getDate())}-${pad(dateObj.getMonth()+1)}</span><span style="font-size:12px;color:var(--muted)">${dateObj.toLocaleString('default',{weekday:'short'})}</span>`;
   wrapper.appendChild(dateNum);
 
-  const entry = entries[dateKey];
+  const entry = entries[key];
   if(entry && (entry.morningLitres || entry.nightLitres || entry.total)){
-    const morningLine = document.createElement('div');
-    morningLine.className = 'entry-line';
+    const morningLine = document.createElement('div'); morningLine.className='entry-line';
     morningLine.innerHTML = `<span>☀ ${entry.morningLitres ?? 0} L</span><span>${formatCurrency(entry.morningAmount ?? 0)}</span>`;
-    const nightLine = document.createElement('div');
-    nightLine.className = 'entry-line';
+    const nightLine = document.createElement('div'); nightLine.className='entry-line';
     nightLine.innerHTML = `<span>🌙 ${entry.nightLitres ?? 0} L</span><span>${formatCurrency(entry.nightAmount ?? 0)}</span>`;
-    wrapper.appendChild(morningLine);
-    wrapper.appendChild(nightLine);
-
-    const totalBadge = document.createElement('div');
-    totalBadge.className = 'total-badge';
+    wrapper.appendChild(morningLine); wrapper.appendChild(nightLine);
+    const totalBadge = document.createElement('div'); totalBadge.className='total-badge';
     totalBadge.textContent = `🥛 ${formatCurrency(entry.total ?? 0)}`;
     wrapper.appendChild(totalBadge);
-
-    if(entry.notes){
-      const noteEl = document.createElement('div');
-      noteEl.className = 'small';
-      noteEl.textContent = '📝 ' + entry.notes;
-      wrapper.appendChild(noteEl);
-    }
+    if(entry.notes){ const noteEl = document.createElement('div'); noteEl.className='small'; noteEl.textContent = '📝 ' + entry.notes; wrapper.appendChild(noteEl); }
   } else {
-    const ph = document.createElement('div');
-    ph.className = 'placeholder';
-    ph.textContent = 'Tap to add 🥛';
+    const ph = document.createElement('div'); ph.className='placeholder'; ph.textContent='Tap to add 🥛';
     wrapper.appendChild(ph);
   }
 
-  wrapper.addEventListener('click', () => openModalForDate(dateKey));
+  wrapper.addEventListener('click', ()=> openModalForDate(key));
   return wrapper;
 }
-
-
 
 /* ---------- MODAL ---------- */
 const modalBackdrop = document.getElementById('modalBackdrop');
@@ -442,7 +442,6 @@ function openModalForDate(dateKey){
   currentModalDate = dateKey;
   modalBackdrop.style.display = 'flex';
   modalBackdrop.setAttribute('aria-hidden','false');
-  // show date as DD-MM-YYYY in modal header
   modalDateEl.textContent = ddmmyyyy(dateKey) + ' — ' + new Date(dateKey).toLocaleString('en-GB',{weekday:'long'});
   const e = entries[dateKey] || {};
   priceInput.value = e.pricePerLitre ?? DEFAULT_PRICE;
@@ -456,25 +455,38 @@ function closeModal(){ modalBackdrop.style.display='none'; modalBackdrop.setAttr
 
 function parseNum(v){ const n = Number(v); return isNaN(n)?0:n; }
 function updateModalAmounts(){
-  const p = parseNum(priceInput.value), mL = parseNum(morningInput.value), nL = parseNum(nightInput.value);
-  const mAmt = Math.round(mL * p * 100) / 100, nAmt = Math.round(nL * p * 100) / 100;
-  morningAmountEl.textContent = formatCurrency(mAmt); nightAmountEl.textContent = formatCurrency(nAmt);
+  const p = parseNum(priceInput.value);
+  const mL = parseNum(morningInput.value);
+  const nL = parseNum(nightInput.value);
+  const mAmt = Math.round(mL * p * 100) / 100;
+  const nAmt = Math.round(nL * p * 100) / 100;
+  morningAmountEl.textContent = formatCurrency(mAmt);
+  nightAmountEl.textContent = formatCurrency(nAmt);
   modalTotalEl.textContent = formatCurrency(Math.round((mAmt + nAmt) * 100) / 100);
 }
+
 saveBtn.addEventListener('click', ()=>{
   if(!currentModalDate) return;
-  const p = parseNum(priceInput.value), mL = parseNum(morningInput.value), nL = parseNum(nightInput.value);
-  const mAmt = Math.round(mL * p * 100) / 100, nAmt = Math.round(nL * p * 100) / 100;
+  const p = parseNum(priceInput.value);
+  const mL = parseNum(morningInput.value);
+  const nL = parseNum(nightInput.value);
+  const mAmt = Math.round(mL * p * 100) / 100;
+  const nAmt = Math.round(nL * p * 100) / 100;
   const total = Math.round((mAmt + nAmt) * 100) / 100;
   const entry = { date: currentModalDate, morningLitres: mL, nightLitres: nL, pricePerLitre: p, morningAmount: mAmt, nightAmount: nAmt, total, notes: noteField.value || '' };
   entries[currentModalDate] = entry;
-  saveLocal(); renderCalendar(); triggerBloomForDate(currentModalDate); closeModal();
+  saveLocal();
+  renderCalendar();
+  triggerBloomForDate(currentModalDate);
+  closeModal();
 });
 cancelBtn.addEventListener('click', closeModal);
 clearBtn.addEventListener('click', ()=>{
   if(!currentModalDate) return;
   if(entries[currentModalDate]) delete entries[currentModalDate];
-  saveLocal(); renderCalendar(); closeModal();
+  saveLocal();
+  renderCalendar();
+  closeModal();
 });
 priceInput.addEventListener('input', updateModalAmounts);
 morningInput.addEventListener('input', updateModalAmounts);
@@ -486,30 +498,41 @@ const monthChartCtx = document.getElementById('monthChart').getContext('2d');
 function updateSummaryAndChart(rangeFrom=null, rangeTo=null){
   const y = viewDate.getFullYear(), m = viewDate.getMonth();
   const daysCount = new Date(y, m+1, 0).getDate();
-  const labels=[], data=[]; let monthTotal=0, monthLitres=0; const dailyMap={};
+  const labels = [], data = [];
+  let monthTotal = 0, monthLitres = 0;
+  const dailyMap = {};
   for(let d=1; d<=daysCount; d++){
-    const key=`${y}-${pad(m+1)}-${pad(d)}`; const e = entries[key] || {};
-    const val = Number(e.total || 0); labels.push('' + d); data.push(val); monthTotal += val; monthLitres += (Number(e.morningLitres||0)+Number(e.nightLitres||0));
-    if(val>0) dailyMap[key] = val;
+    const key = `${y}-${pad(m+1)}-${pad(d)}`;
+    const e = entries[key] || {};
+    const val = Number(e.total || 0);
+    labels.push('' + d);
+    data.push(val);
+    monthTotal += val;
+    monthLitres += (Number(e.morningLitres||0) + Number(e.nightLitres||0));
+    if(val > 0) dailyMap[key] = val;
   }
-  monthTotal = Math.round(monthTotal*100)/100; monthTotalEl.textContent = formatCurrency(monthTotal);
+  monthTotal = Math.round(monthTotal*100)/100;
+  monthTotalEl.textContent = formatCurrency(monthTotal);
   totalLitresEl.textContent = `${Math.round(monthLitres*100)/100} L`;
-  const avg = daysCount === 0 ? 0 : Math.round((monthTotal / daysCount) * 100) / 100; avgPerDayEl.textContent = formatCurrency(avg);
+  const avg = daysCount === 0 ? 0 : Math.round((monthTotal / daysCount) * 100) / 100;
+  avgPerDayEl.textContent = formatCurrency(avg);
 
-  const keys = Object.keys(dailyMap);
-  if(keys.length===0){ mostExpEl.textContent='—'; leastExpEl.textContent='—'; }
-  else {
-    const sorted = keys.sort((a,b)=> dailyMap[b]-dailyMap[a]);
+  const entriesKeys = Object.keys(dailyMap);
+  if(entriesKeys.length === 0){
+    mostExpEl.textContent = '—';
+    leastExpEl.textContent = '—';
+  } else {
+    const sorted = entriesKeys.sort((a,b)=> dailyMap[b] - dailyMap[a]);
     mostExpEl.textContent = `${ddmmyyyy(sorted[0])} (${formatCurrency(dailyMap[sorted[0]])})`;
     leastExpEl.textContent = `${ddmmyyyy(sorted[sorted.length-1])} (${formatCurrency(dailyMap[sorted[sorted.length-1]])})`;
   }
 
   sentenceSummaryEl.textContent = `This month you bought ${Math.round(monthLitres*100)/100} L milk and spent ${formatCurrency(monthTotal)}. Average ${formatCurrency(avg)}/day.`;
 
-  // compare with last month
+  // compare last month
   const last = new Date(y, m-1, 1); const ly=last.getFullYear(), lm=last.getMonth();
-  let lastTotal = 0;
-  for(let d=1; d<=new Date(ly, lm+1, 0).getDate(); d++){
+  let lastTotal=0;
+  for(let d=1; d<= new Date(ly, lm+1, 0).getDate(); d++){
     const key = `${ly}-${pad(lm+1)}-${pad(d)}`; lastTotal += Number((entries[key] && entries[key].total) || 0);
   }
   lastTotal = Math.round(lastTotal*100)/100;
@@ -517,30 +540,18 @@ function updateSummaryAndChart(rangeFrom=null, rangeTo=null){
   const pct = lastTotal === 0 ? (monthTotal === 0 ? 0 : 100) : Math.round((diff/lastTotal)*100);
   compareText.textContent = `Last month: ${formatCurrency(lastTotal)} • This month: ${formatCurrency(monthTotal)} • Change: ${pct >=0 ? '+' : ''}${pct}%`;
 
-  // chart data: if range provided and same month, slice accordingly
-  let chartLabels = labels, chartData = data;
-  if(rangeFrom && rangeTo){
-    const fromDate = new Date(rangeFrom), toDate = new Date(rangeTo);
-    if(fromDate.getFullYear() === y && fromDate.getMonth() === m){
-      const startIdx = fromDate.getDate() - 1;
-      const endIdx = Math.min(toDate.getDate() - 1, data.length - 1);
-      chartLabels = labels.slice(startIdx, endIdx + 1);
-      chartData = data.slice(startIdx, endIdx + 1);
-    }
-  }
-
+  // chart (full month dataset)
   if(monthChart) monthChart.destroy();
   monthChart = new Chart(monthChartCtx, {
-    type:'bar',
-    data:{ labels: chartLabels, datasets:[{ label:'Daily total', data: chartData, borderRadius:6, barThickness:18 }] },
-    options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ ticks:{ callback:(v)=> formatCurrency(v) } } }, plugins:{ legend:{ display:false } } }
+    type: 'bar',
+    data: { labels, datasets:[{ label:'Daily total', data, borderRadius:6, barThickness:18 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ y:{ ticks:{ callback:(v)=> formatCurrency(v) } } }, plugins:{ legend:{ display:false } } }
   });
 
-  // missing today helper -> small inline helper text already present; show via helper message if missing
   checkMissingToday();
 }
 
-/* ---------- MISSING TODAY (inline helper message) ---------- */
+/* ---------- MISSING TODAY ---------- */
 function checkMissingToday(){
   const t = new Date(); const key = `${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
   const e = entries[key];
@@ -551,13 +562,12 @@ function checkMissingToday(){
   } else { helperEl.textContent = `${pad(t.getDate())}-${pad(t.getMonth()+1)}-${t.getFullYear()} — Entry present`; helperEl.style.color = ''; }
 }
 
-/* ---------- SEARCH (DD-MM-YYYY / DD-MM) ---------- */
+/* ---------- SEARCH ---------- */
 document.getElementById('searchDate').addEventListener('keydown', (ev)=>{
   if(ev.key === 'Enter'){
     const q = ev.target.value.trim();
     if(!q) return;
     let targetIso = null;
-    // try DD-MM-YYYY
     if(/^\d{2}-\d{2}-\d{4}$/.test(q)){
       const parts = q.split('-'); targetIso = `${parts[2]}-${parts[1]}-${parts[0]}`;
     } else if(/^\d{1,2}-\d{1,2}$/.test(q)){
@@ -567,7 +577,6 @@ document.getElementById('searchDate').addEventListener('keydown', (ev)=>{
       alert('Use DD-MM-YYYY or DD-MM (e.g., 11-11).');
       return;
     }
-    // set month view to that date's month
     const [yy,mm,dd] = targetIso.split('-'); viewDate = new Date(Number(yy), Number(mm)-1, 1);
     renderCalendar();
     setTimeout(()=> openModalForDate(targetIso), 250);
@@ -599,19 +608,34 @@ document.getElementById('exportPDF').addEventListener('click', ()=>{
 });
 document.getElementById('syncBtn').addEventListener('click', syncToSheetUpsert);
 
-/* ---------- MONTH NAV ---------- */
-document.getElementById('prevMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1,1); renderCalendar(); });
-document.getElementById('nextMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1,1); renderCalendar(); });
-document.getElementById('largeTextToggle').addEventListener('change', (e)=>{ if(e.target.checked) document.body.classList.add('large'); else document.body.classList.remove('large'); });
+/* ---------- NAV & ANALYSIS ---------- */
+const tabCalendar = document.getElementById('tabCalendar');
+const tabAnalysis = document.getElementById('tabAnalysis');
+const summaryCard = document.getElementById('summaryCard');
+const analysisCard = document.getElementById('analysisCard');
+
+tabCalendar.addEventListener('click', ()=> showTab('calendar'));
+tabAnalysis.addEventListener('click', ()=> showTab('analysis'));
+
+function showTab(name){
+  if(name === 'analysis'){
+    tabAnalysis.classList.add('active'); tabCalendar.classList.remove('active');
+    summaryCard.style.display = 'none'; analysisCard.style.display = 'block';
+    buildYearOptions(); updateYearChart();
+  } else {
+    tabCalendar.classList.add('active'); tabAnalysis.classList.remove('active');
+    summaryCard.style.display = 'block'; analysisCard.style.display = 'none';
+  }
+}
 
 /* ---------- BLOOM + CONFETTI ---------- */
 const confettiCanvas = document.getElementById('confettiCanvas');
 confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight;
 window.addEventListener('resize', ()=>{ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; });
+
 function triggerBloomForDate(dateKey){
   const tiles = Array.from(document.querySelectorAll('.day'));
   tiles.forEach(tile=>{
-    // match day number visually: tile contains DD-MM prefix
     if(tile.querySelector('.date-num') && tile.querySelector('.date-num').textContent.includes(dateKey.split('-')[2])){
       const badge = tile.querySelector('.total-badge'); if(badge){ badge.classList.remove('bloom'); void badge.offsetWidth; badge.classList.add('bloom'); }
     }
@@ -619,81 +643,43 @@ function triggerBloomForDate(dateKey){
   runConfettiBurst();
 }
 function runConfettiBurst(){
-  const ctx = confettiCanvas.getContext('2d'); const pieces=[];
-  const W = confettiCanvas.width, H = confettiCanvas.height;
-  for(let i=0;i<80;i++){ pieces.push({ x: Math.random()*W, y:-20-Math.random()*200, vx:(Math.random()-0.5)*6, vy:2+Math.random()*6, size:6+Math.random()*8, color:['#ef4444','#f59e0b','#10b981','#60a5fa','#8b5cf6'][Math.floor(Math.random()*5)], rot:Math.random()*360 }); }
-  let t=0;
-  function frame(){
-    t++; ctx.clearRect(0,0,W,H);
-    pieces.forEach(p=>{ p.x += p.vx; p.y += p.vy; p.vy += 0.12; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size); ctx.restore(); });
-    if(t < 120) requestAnimationFrame(frame); else ctx.clearRect(0,0,W,H);
-  }
-  frame();
+  const ctx = confettiCanvas.getContext('2d'); const pieces=[]; const W=confettiCanvas.width, H=confettiCanvas.height;
+  for(let i=0;i<70;i++) pieces.push({ x:Math.random()*W, y:-20-Math.random()*200, vx:(Math.random()-0.5)*6, vy:2+Math.random()*6, size:6+Math.random()*8, color:['#ef4444','#f59e0b','#10b981','#60a5fa','#8b5cf6'][Math.floor(Math.random()*5)], rot:Math.random()*360 });
+  let t=0; function frame(){ t++; ctx.clearRect(0,0,W,H); pieces.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size); ctx.restore(); }); if(t<120) requestAnimationFrame(frame); else ctx.clearRect(0,0,W,H); } frame();
 }
 
-/* ---------- ANALYSIS (Yearly monthly totals) ---------- */
+/* ---------- ANALYSIS (Yearly chart) ---------- */
 const yearSelect = document.getElementById('yearSelect');
-const yearChartCtx = document.getElementById('yearChart').getContext('2d');
+const yearChartCtx = document.getElementById('yearChart')?.getContext?.('2d');
 
 function buildYearOptions(){
-  // find min and max year in entries, include current year
   const years = new Set([new Date().getFullYear()]);
-  Object.keys(entries).forEach(k => { const y = Number(k.split('-')[0]); if(!isNaN(y)) years.add(y); });
+  Object.keys(entries).forEach(k=>{ const y = Number(k.split('-')[0]); if(!isNaN(y)) years.add(y); });
   const sorted = Array.from(years).sort((a,b)=>b-a);
-  yearSelect.innerHTML = '';
-  sorted.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; yearSelect.appendChild(o); });
+  yearSelect.innerHTML=''; sorted.forEach(y=>{ const o=document.createElement('option'); o.value=y; o.textContent=y; yearSelect.appendChild(o); });
 }
 function updateYearChart(){
+  if(!yearChartCtx) return;
   const year = Number(yearSelect.value) || new Date().getFullYear();
   const monthTotals = new Array(12).fill(0);
-  Object.keys(entries).forEach(k => {
-    const [yy,mm,dd] = k.split('-').map(Number);
-    if(yy === year) monthTotals[mm-1] += Number(entries[k].total || 0);
-  });
+  Object.keys(entries).forEach(k=>{ const [yy,mm]=k.split('-').map(Number); if(yy===year) monthTotals[mm-1]+=Number(entries[k].total||0); });
   if(yearChart) yearChart.destroy();
   yearChart = new Chart(yearChartCtx, {
     type:'bar',
-    data:{ labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets:[{ label:'Month total', data:monthTotals, backgroundColor:monthTotals.map(v=> v>0 ? '#60a5fa' : 'rgba(200,200,200,0.3)'), borderRadius:8 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: (ctx) => formatCurrency(ctx.raw) } } }, onClick: (evt, items) => {
-      if(items.length>0){
-        const idx = items[0].index; // month index 0-11
-        // set viewDate to chosen month and switch to Calendar tab
-        viewDate = new Date(year, idx, 1); showTab('calendar');
-        renderCalendar();
-      }
-    } }
+    data:{ labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets:[{ label:'Month total', data:monthTotals, backgroundColor:monthTotals.map(v=>v>0?'#60a5fa':'rgba(200,200,200,0.3)'), borderRadius:8 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, onClick:(evt,items)=>{ if(items.length>0){ const idx = items[0].index; viewDate = new Date(year, idx, 1); showTab('calendar'); renderCalendar(); } } }
   });
 }
-
-/* ---------- NAV TABS ---------- */
-const tabCalendar = document.getElementById('tabCalendar');
-const tabAnalysis = document.getElementById('tabAnalysis');
-const mainContent = document.getElementById('mainContent');
-const summaryCard = document.getElementById('summaryCard');
-const analysisCard = document.getElementById('analysisCard');
-
-function showTab(name){
-  if(name === 'analysis'){
-    tabAnalysis.classList.add('active'); tabCalendar.classList.remove('active');
-    mainContent.style.display = 'block';
-    summaryCard.style.display = 'none';
-    analysisCard.style.display = 'block';
-    buildYearOptions(); updateYearChart();
-  } else {
-    tabCalendar.classList.add('active'); tabAnalysis.classList.remove('active');
-    mainContent.style.display = 'block';
-    summaryCard.style.display = 'block';
-    analysisCard.style.display = 'none';
-  }
-}
-tabCalendar.addEventListener('click', ()=> showTab('calendar'));
-tabAnalysis.addEventListener('click', ()=> showTab('analysis'));
 yearSelect.addEventListener('change', updateYearChart);
 
-/* ---------- SEARCH/UTILS ---------- */
-document.getElementById('searchDate').addEventListener('input', (e)=>{ /* nothing */ });
+/* ---------- NAV CONTROLS ---------- */
+document.getElementById('prevMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1, 1); renderCalendar(); });
+document.getElementById('nextMonth').addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1, 1); renderCalendar(); });
+document.getElementById('largeTextToggle').addEventListener('change', (e)=>{ if(e.target.checked) document.body.classList.add('large'); else document.body.classList.remove('large'); });
 
-/* ---------- INIT ---------- */
+/* ---------- SEARCH placeholder ignored above (already done) ---------- */
+
+/* ---------- INITIALIZE ---------- */
 loadFromLocal();
 renderCalendar();
 showTab('calendar');
